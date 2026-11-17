@@ -30,7 +30,7 @@ const TEXTS = [
   },
   {
     "video": "video/07-lumiere.mp4",
-    "title": "PUITS DE LUMIÈRE",
+    "title": "PUIT DE LUMIÈRE",
     "summary": "Un couloir sombre s'étire dans la pénombre, à peine éclairé par une faible lueur qui laisse deviner les contours des lieux et entretient une atmosphère mystérieuse."
   },
   {

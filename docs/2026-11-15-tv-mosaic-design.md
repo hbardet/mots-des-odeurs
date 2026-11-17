@@ -179,6 +179,55 @@ Each entry gains two fields; nothing is renamed:
 - `ArrowLeft` / `ArrowRight`: change slide, carousel mode only.
 - Tiles are real `<button>`s, so `Tab` + `Enter`/`Space` opens the zoom for free.
 
+### Plan (third view)
+
+- `plan.svg` is the designer's floor plan: a 5632.67 × 4921.24 drawing, white hairline strokes on
+transparent, and ten pink marks (`class="cls-16 dot"`, `r="41.38"`, `#e7348b`). Each mark carries
+`data-index`, the index of the piece it shows in `data.js`:
+
+  | dot (cx, cy) | libellé | `data-index` | clip |
+  |---|---|---|---|
+  | 3251.1, 1331.81 | Pot de fleurs | 3 | `video/05-fleur.mp4` |
+  | 3967.15, 318.67 | Pause cigarette | 2 | `video/06-fumee.mp4` |
+  | 3458.56, 732.07 | Baie vitrée | 1 | `video/01-baie-vitree.mp4` |
+  | 4117.17, 1954.34 | Machine à café | 4 | `video/03-cafe.mp4` |
+  | 3987.06, 2480.64 | Ventilateur | 6 | `video/09-ventilateur.mp4` |
+  | 1149.34, 1208.78 | Savon | 7 | `video/02-bulle.mp4` |
+  | 3338.15, 2190.46 | Puit de lumière | 5 | `video/07-lumiere.mp4` |
+  | 2085.23, 3075.57 | Ordinateur | 9 | `video/10-ordinateur.mp4` |
+  | 807.06, 4343.41 | Flaque d'essence | 0 | `video/04-essence.mp4` |
+  | 1229.7, 3327.91 | Poubelle | 8 | `video/08-poubelle.mp4` |
+
+- Re-exporting the plan only costs re-adding those ten `data-index` attributes; nothing else in the
+  drawing is touched. It is fetched at runtime (so the file stays the single source) and injected;
+on `file://` the fetch fails and the drawing is shown flat, without its dots.
+- The view is the drawing fitted whole (`preserveAspectRatio` default), centred on the wall's
+  black ground; the plan is wider than tall, so a landscape window leaves black at the sides.
+- Each mark is backed by a transparent `<circle class="dot-hit" r="260">` inserted at the end of
+  the drawing together with its mark (several marks were drawn under a white piece of furniture
+  and were swallowed). The `<circle>` is the control: `role="button"`, `tabindex="0"`, an
+  `aria-label`, and a hover/focus state that scales the mark ×1.7 and glows it. The mark itself is
+  `pointer-events: none`.
+- A mark opens a card over the plan — the plan stays visible under a dimmed, slightly blurred
+  ground — holding a 3:2 frame of the clip, its title and its description below, and a round
+  close button. The card is a column so the frame gives way before the words on a short window.
+  `Escape`, a press on the close button or a click beside the card closes it; the focus goes back
+  to the mark it came from. The card's `<video>` is a single reused element whose `src` is dropped
+  on close, so no decoder is left running.
+- The wall's ten clips are paused while the plan is on screen.
+
+### Kinds of view now
+
+One link walks the three views in a ring: mosaic → carousel → plan → mosaic. It always names the
+next view (`#mosaique`, `#carrousel`, `#plan`), so `location.hash` stays the single source of truth
+and the back button keeps working. A view change closes whatever was layered above the view it
+leaves (the zoom belongs to the wall, the card to the plan).
+
+> The labels in `plan.svg` ask for **Feroniapi** (objects) and **Futura** (room names), neither of
+> which ships with the site: they fall back to a system serif and grotesque. Same in any SVG
+> viewer, so nothing is broken — but the drawing will only look like the designer's once the two
+> fonts are added.
+
 ## Left to the builder
 
 The hover treatment of a tile (a lift, a brightened hairline, or nothing), the easing curve, and
@@ -198,3 +247,6 @@ the gradient recipe behind the zoomed caption. None of these change what gets bu
   tile order that the wall already used. The four long articles of the first version are archived
   in `docs/2026-11-15-textes-longs.md`. Since the description is the text of the piece, the
   zoom band no longer clamps it to three lines.
+- **2026-11-17 (3)** — third view: the floor plan (`plan.svg`), faded in where the wall was, its
+  ten pink marks opening a card with the clip. The mode toggle became a three-view ring. See
+  *Plan (third view)* above for the dot table and the interaction.

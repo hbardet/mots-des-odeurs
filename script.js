@@ -1,8 +1,10 @@
 /* Video wall — vanilla, no dependencies.
    TEXTS (see data.js) drives everything: tile i shows TEXTS[i].video and is
-   labelled with TEXTS[i].title. Two presentations of the same ten tiles: the mosaic
-   wall (default) and the full-bleed carousel, swapped through location.hash so
-   the toggle is a real link and the back button works. */
+   labelled with TEXTS[i].title. Three views of the same ten pieces, swapped
+   through location.hash so the toggle is a real link and the back button works:
+   the mosaic wall (default), the full-bleed carousel, and the plan — the flat's
+   floor plan, whose ten pink dots open a card over it (plan.svg carries the
+   mapping: data-index on each dot is a TEXTS index). */
 
 (function () {
   'use strict';
@@ -14,13 +16,29 @@
   var zoomUi = document.getElementById('zoom-ui');
   var zoomBack = document.getElementById('zoom-back');
 
+  var planHost = document.getElementById('plan');
+  var card = document.getElementById('plan-card');
+  var cardTitle = document.getElementById('plan-card-title');
+  var cardSummary = document.getElementById('plan-card-summary');
+  var cardVideo = document.getElementById('plan-card-video');
+  var cardClose = document.getElementById('plan-card-close');
+
   var ITEM_COUNT = Math.min(TEXTS.length, 10);
   var tiles = [];
   var videos = [];
 
-  var mode = 'mosaic'; // 'mosaic' | 'carousel'
+  var mode = 'mosaic'; // 'mosaic' | 'carousel' | 'plan'
   var index = 0;       // carousel slide
   var zoomed = -1;     // mosaic tile promoted to full screen, -1 when none
+  var cardOpen = -1;   // plan dot whose clip is in the card, -1 when none
+  var cardOrigin = null; // the dot to hand the focus back to
+  var planWired = false;
+
+  // The toggle is a single link that walks the three views in a ring.
+  var NEXT_MODE = { mosaic: 'carousel', carousel: 'plan', plan: 'mosaic' };
+  var MODE_LABEL = { mosaic: 'Mosaïque', carousel: 'Carrousel', plan: 'Plan' };
+  var MODE_HASH = { mosaic: '#mosaique', carousel: '#carrousel', plan: '#plan' };
+  var SVG_NS = 'http://www.w3.org/2000/svg';
 
   /* ---------- helpers ---------- */
 
@@ -95,7 +113,9 @@
   /* ---------- presentations ---------- */
 
   function modeFromHash() {
-    return location.hash === '#carrousel' ? 'carousel' : 'mosaic';
+    if (location.hash === '#carrousel') return 'carousel';
+    if (location.hash === '#plan') return 'plan';
+    return 'mosaic';
   }
 
   function showSlide(i) {
@@ -131,28 +151,32 @@
   }
 
   function setMode(next) {
-    // A change of presentation closes whatever was layered above the wall: the
-    // zoom belongs to the presentation it was opened from, and the back button
-    // can change the hash under it.
-    if (next !== mode) closeZoom();
+    // A change of view closes whatever was layered above the view it is
+    // leaving: the zoom belongs to the wall, the card to the plan, and the back
+    // button can change the hash under them.
+    if (next !== mode) {
+      closePlanCard();
+      closeZoom();
+    }
 
     mode = next;
-    // The class lives on <body> so the scrim, the arrows and the toggle — all
-    // siblings of the wall — can be told about the presentation too.
+    // The class lives on <body> so the scrim, the arrows, the plan and the
+    // toggle — all siblings of the wall — can be told about the view too.
     document.body.classList.toggle('mode-mosaic', next === 'mosaic');
     document.body.classList.toggle('mode-carousel', next === 'carousel');
+    document.body.classList.toggle('mode-plan', next === 'plan');
 
-    var toCarousel = next === 'mosaic';
-    toggle.setAttribute('href', toCarousel ? '#carrousel' : '#mosaique');
-    toggle.textContent = toCarousel ? 'Carrousel' : 'Mosaïque';
+    var after = NEXT_MODE[next];
+    toggle.setAttribute('href', MODE_HASH[after]);
+    toggle.textContent = MODE_LABEL[after];
     toggle.setAttribute(
       'aria-label',
-      toCarousel ? 'Passer en mode carrousel' : 'Passer en mode mosaïque'
+      'Passer en mode ' + MODE_LABEL[after].toLowerCase()
     );
 
-    // What a tile does depends on the presentation: on the wall it enlarges the
-    // clip, in the carousel it does nothing at all, so it is neither announced
-    // nor reachable as a control there.
+    // What a tile does depends on the view: on the wall it enlarges the clip,
+    // in the carousel it does nothing at all, so it is neither announced nor
+    // reachable as a control there.
     tiles.forEach(function (tile, n) {
       var title = (TEXTS[n] && TEXTS[n].title) || '';
       tile.disabled = next === 'carousel';
@@ -171,11 +195,20 @@
       return;
     }
 
-    // Back on the wall: everything plays, everything is reachable again.
+    // Out of the carousel: everything is reachable again.
     tiles.forEach(function (tile) {
       tile.removeAttribute('aria-hidden');
       tile.setAttribute('tabindex', '0');
     });
+
+    if (next === 'plan') {
+      // The wall is hidden: its ten decoders have no business running unseen.
+      videos.forEach(function (clip) { clip.pause(); });
+      loadPlan();
+      return;
+    }
+
+    // Back on the wall: everything plays.
     playAll();
   }
 
@@ -255,6 +288,122 @@
     tile.focus();
   }
 
+  /* ---------- plan ---------- */
+
+  // plan.svg is the drawing the designer maintains: its ten pink dots carry the
+  // data-index of the piece they show. It is fetched rather than inlined so the
+  // file stays the single source — re-exporting it only costs re-adding the ten
+  // attributes.
+  function loadPlan() {
+    if (planWired || !planHost) return;
+    planWired = true;
+
+    fetch('plan.svg')
+      .then(function (response) {
+        if (!response.ok) throw new Error('plan.svg ' + response.status);
+        return response.text();
+      })
+      .then(function (markup) {
+        planHost.innerHTML = markup.replace(/^\s*<\?xml[^>]*\?>/, '');
+        wirePlan();
+      })
+      .catch(function () {
+        // file:// or a missing asset: at least show the drawing, flat.
+        planHost.innerHTML =
+          '<img class="plan-img" src="plan.svg" alt="Plan des dix odeurs">';
+      });
+  }
+
+  function wirePlan() {
+    var art = planHost.querySelector('svg');
+    var dots = planHost.querySelectorAll('.dot');
+
+    Array.prototype.forEach.call(dots, function (dot) {
+      var n = parseInt(dot.getAttribute('data-index'), 10);
+      if (isNaN(n) || !TEXTS[n]) return;
+
+      // The mark itself is four tenths of a percent of the drawing: far too
+      // small to hit. A transparent circle underneath takes the pointer and
+      // the Tab stop, and the mark answers through the sibling selector.
+      var hit = document.createElementNS(SVG_NS, 'circle');
+      hit.setAttribute('class', 'dot-hit');
+      hit.setAttribute('cx', dot.getAttribute('cx'));
+      hit.setAttribute('cy', dot.getAttribute('cy'));
+      // Wide enough to tap on a phone, narrow enough not to reach a neighbour
+      // (the two closest marks are 860 units apart).
+      hit.setAttribute('r', '260');
+      hit.setAttribute('role', 'button');
+      hit.setAttribute('tabindex', '0');
+      hit.setAttribute('data-index', String(n));
+      hit.setAttribute('aria-label', 'Ouvrir : ' + (TEXTS[n].title || ''));
+
+      // Moved to the end of the drawing: several marks were drawn underneath a
+      // white piece of furniture, which swallowed them.
+      if (art) {
+        art.appendChild(hit);
+        art.appendChild(dot);
+      } else {
+        dot.parentNode.insertBefore(hit, dot);
+      }
+    });
+
+    planHost.setAttribute(
+      'aria-label',
+      'Plan du logement — un point rose par odeur'
+    );
+  }
+
+  function dotIndex(target) {
+    var el = target && target.closest ? target.closest('[data-index]') : null;
+    if (!el || !planHost.contains(el)) return -1;
+    var n = parseInt(el.getAttribute('data-index'), 10);
+    return isNaN(n) ? -1 : n;
+  }
+
+  function openPlanCard(i, origin) {
+    if (mode !== 'plan' || !card) return;
+    var item = TEXTS[i];
+    if (!item) return;
+
+    cardOpen = i;
+    // Handed back on close: the transparent circle is the only focusable of the
+    // pair, whatever the press landed on.
+    cardOrigin = planHost.querySelector('.dot-hit[data-index="' + i + '"]') || origin || null;
+    cardTitle.textContent = item.title || '';
+    cardSummary.textContent = item.summary || '';
+    card.hidden = false;
+
+    if (item.video) {
+      cardVideo.setAttribute('src', item.video);
+      cardVideo.load();
+      play(cardVideo);
+    }
+
+    // The plan dims but stays visible behind the card: it leaves the tab order
+    // so the focus cannot wander into a drawing under a dialog.
+    planHost.inert = true;
+    cardClose.focus();
+  }
+
+  function closePlanCard() {
+    if (cardOpen < 0) {
+      if (card) card.hidden = true;
+      return;
+    }
+
+    cardOpen = -1;
+    card.hidden = true;
+    cardVideo.pause();
+    // Dropping the source frees the decoder instead of keeping a paused clip
+    // alive for a card nobody is looking at.
+    cardVideo.removeAttribute('src');
+    cardVideo.load();
+
+    planHost.inert = false;
+    if (cardOrigin && cardOrigin.focus) cardOrigin.focus();
+    cardOrigin = null;
+  }
+
   /* ---------- wiring ---------- */
 
   wall.addEventListener('click', function (e) {
@@ -287,9 +436,36 @@
     closeZoom();
   });
 
+  planHost.addEventListener('click', function (e) {
+    var n = dotIndex(e.target);
+    if (n < 0) return;
+    openPlanCard(n, e.target.closest('[data-index]'));
+  });
+
+  planHost.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    var n = dotIndex(e.target);
+    if (n < 0) return;
+    e.preventDefault();
+    openPlanCard(n, e.target.closest('[data-index]'));
+  });
+
+  cardClose.addEventListener('click', function (e) {
+    e.stopPropagation();
+    closePlanCard();
+  });
+
+  // A click on the dimmed plan, around the card, closes it.
+  card.addEventListener('click', function (e) {
+    if (e.target === card) closePlanCard();
+  });
+
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      if (zoomed >= 0) {
+      if (cardOpen >= 0) {
+        e.preventDefault();
+        closePlanCard();
+      } else if (zoomed >= 0) {
         e.preventDefault();
         closeZoom();
       }

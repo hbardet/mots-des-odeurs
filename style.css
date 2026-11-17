@@ -169,10 +169,13 @@ body.mode-carousel #wall .tile-media {
 
 body.mode-carousel #wall .tile-caption { display: none; }
 
-/* Nothing to dim or to page through on the wall. */
+/* Nothing to dim or to page through on the wall, nor on the plan. */
 .mode-mosaic #scrim,
+.mode-plan #scrim,
 .mode-mosaic #prev,
-.mode-mosaic #next { display: none; }
+.mode-plan #prev,
+.mode-mosaic #next,
+.mode-plan #next { display: none; }
 
 /* ---------- full screen ---------- */
 
@@ -366,14 +369,167 @@ body.mode-carousel #wall .tile-caption { display: none; }
   stroke-linejoin: round;
 }
 
+/* ---------- plan ---------- */
+
+body.mode-plan #wall { display: none; }
+
+/* The drawing is wider than tall, the window usually the other way round: it
+   is fitted whole, and the black of the wall fills what is left. */
+#plan {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: none;
+  place-items: center;
+  background: #0b0a09;
+}
+
+body.mode-plan #plan { display: grid; }
+
+#plan svg { display: block; width: 100%; height: 100%; }
+
+/* The fallback when plan.svg could not be read (file://): the same drawing,
+   without its dots. */
+.plan-img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* The ten pink marks are the only controls on the plan. The mark stays the
+   size it was drawn at; a wider transparent circle under it takes the pointer
+   and the Tab stop, and the mark answers through the sibling selector. */
+.dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  /* The mark is a mark, not a target: the circle underneath takes the clicks,
+     so a press lands on something focusable. */
+  pointer-events: none;
+  transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.dot-hit { fill: transparent; cursor: pointer; }
+
+.dot-hit:hover + .dot,
+.dot-hit:focus-visible + .dot {
+  transform: scale(1.7);
+  filter: drop-shadow(0 0 22px rgba(231, 52, 139, 0.8));
+}
+
+/* ---------- plan card ---------- */
+
+#plan-card {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 56px);
+  background: rgba(11, 10, 9, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+#plan-card[hidden] { display: none; }
+
+.plan-card-panel {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: 100%;
+  /* A column so the clip gives way before the words do: on a short window the
+     frame loses a little height (the clip covers), the title never scrolls. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #14120f;
+  border: 1px solid rgba(246, 242, 236, 0.16);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62);
+  animation: rise 300ms var(--ease) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.plan-card-media {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #000;
+}
+
+.plan-card-text {
+  flex: 0 0 auto;
+  padding: clamp(14px, 2vw, 20px) clamp(16px, 2.4vw, 26px) clamp(18px, 2.4vw, 26px);
+}
+
+.plan-card-text h2 {
+  margin: 0;
+  font-size: clamp(11px, 1vw, 12px);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.plan-card-text p {
+  margin: 8px 0 0;
+  max-width: 66ch;
+  font-size: clamp(13px, 1.1vw, 15px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+#plan-card-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(10, 9, 8, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  cursor: pointer;
+  transition: background 220ms var(--ease), border-color 220ms var(--ease),
+              color 220ms var(--ease);
+}
+
+#plan-card-close:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #14110f;
+}
+
+#plan-card-close:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+#plan-card-close svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
 /* ---------- small screens ---------- */
 
 @media (max-width: 640px) {
   #prev, #next { width: 46px; height: 46px; margin-top: -23px; }
   #prev svg, #next svg { width: 18px; height: 18px; }
+  #plan-card { padding: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tile { transition-duration: 1ms; }
+  .dot { transition-duration: 1ms; }
   #zoom-ui:not([hidden]) { animation: none; }
+  .plan-card-panel { animation: none; }
 }
