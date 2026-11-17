@@ -1,28 +1,28 @@
 // Source de vérité du contenu du site — édité à la main.
 const TEXTS = [
   {
-    "video": "video/video1.mp4",
+    "video": "video/04-essence.mp4",
     "title": "L'ESSENCE PRÉCEDE L'EXISTENCE (OLFACTIVE)",
     "author": "EMMANUELLE DECHELETTE",
     "summary": "L'odeur d'essence de mon enfance, et ce qu'elle m'a appris sur l'huile d'olive.",
     "content": "Mes premiers émois olfactifs, je les dois à l'odeur inégalable de l'essence. Son attaque impérieuse du système olfactif m'a depuis toujours fait capituler. Si l'on tombe amoureux, on tombe aussi à mon sens sous le charme d'une odeur, cet envahisseur qui ne ressemble pas à un ennemi. La petite fille que j'étais dans les années 1970 ignorait que son plaisir olfactif était coupable: naïvement, à cet âge, le plaisir n'était pas associé à l'interdit. Comment aurais-je pu imaginer que les effluves si caractéristiques de l'essence étaient dangereux ? En 1948, l'American Petroleum Institute (API) avait pourtant déjà mené une étude aux conclusions sans appel : « Le seul niveau \"sûr\" d'exposition au benzène est l'absence d'exposition».\n\nL'odeur de l'essence convoque aussi le souvenir des Glups, ces figurines en caoutchouc offertes dans les stations ESSO. J'ai découvert tardivement que toutes les cases étaient cochées pour me faire aimer ce moment à la station-service: l'effet inhibiteur du benzène sur le système nerveux (activateur de la voie de la récompense dans le cerveau) ou encore les nouveaux Glups pour ma collection... Je n'en suis pas fière, mais voilà comment s'est construit mon univers olfactif.\n\nJe suis en quelque sorte un «nez» de l'huile d'olive, alors me présenter comme une adepte du benzène m'a semblé peu gratifiant. Mon éducation olfactive n'a pas été simple. L'apprentissage des odeurs n'est pas au programme scolaire, et les citadins sont peu exposés à des odeurs comestibles.\n\nQuelles sont vos références olfactives ? Quelle est l'odeur qui ravive vos souvenirs d'enfance ? Trouvez-vous facile de décrire les arômes d'un vin ou d'un plat ? En public, la peur de se tromper est souvent paralysante.\n\nC'est en me passionnant pour l'huile d'olive dans sa version fraîche «Olio Nuovo» que j'ai découvert le monde de l'odorat. J'ignorais totalement que le goût n'existait pas sans l'odorat. Et le goût de l'huile d'olive ne se limite pas à l'amertume. C'est son «fruité» qui séduit. Il peut être décrit comme sa fraîcheur, une composition aromatique qui envoûte.\n\nComme le vin, l'huile d'olive est le fruit d'un espace géographique, de conditions climatiques et du savoir-faire humain. Si vous voulez apprendre à la déguster, il n'y a rien de plus simple, voici les trois critères que vous devez prendre en considération : le fruité, l'amertume et l'ardence.\n\nLa dégustation experte et la dégustation hédonique prennent en compte ces mêmes critères :\n-   le fruité vous promet un voyage sensoriel que vous humez par le nez,\n-   l'amertume, en bouche, est le vaisseau qui structure la dégustation,\n- l'ardence est la sensation tactile qui peut provoquer un picotement, surtout si l'huile d'olive est fraîche.\n\nLa qualité de l'huile d'olive est jugée sur un certain équilibre entre ces trois critères. L'odorat possède un rôle clé dans cette sainte trinité de la dégustation.\nLe fruité tiendra-t-il ses promesses aromatiques en bouche au moment de la rétro-olfaction ? Le voyage gustatif sera-t-il bref ou au contraire surprenant, long en bouche ?\n\nEn dégustation, apprenez à vous faire confiance.\nVotre goût est unique, tout comme votre appareil physiologique et vos références culturelles. La dégustation est un plaisir qui peut se transformer en quête : celle de votre unicité, l'affirmation de vos goûts plutôt que des conventions.\n\nDepuis quelques années, j'ai opté pour une voiture électrique. L'odeur de l'essence ne me manque pas, mon champ olfactif s'est élargi et mon objectif est désormais de découvrir les arômes des quelques 2000 variétés d'olives qui existent dans le monde, sans compter l'infinie possibilité d'assemblages !"
   },
   {
-    "video": "video/video2.mp4",
+    "video": "video/01-baie-vitree.mp4",
     "title": "Ô SOLEIL",
     "author": "ALIÉNOR MASSENET",
     "summary": "Soleil, sel, sable et immortelle : le parfum d'une peau qui garde la journée.",
     "content": "Le parfum est présent à tout moment dans ma vie.\nLe soleil est mon inspiration. Sous le soleil brûlant, je laisse ma peau s'imprégner de la chaleur. Chaque rayon de lumière semble me caresser, m'envahir, me fondre dans cette chaleur douce, presque sucrée, vanillée. J'aime cette sensation de ma peau qui s'adapte et se transforme à son contact. Elle devient plus tendre, plus vivante, comme un morceau de chocolat au lait qui fond doucement sur la langue. Ce parfum solaire, musqué, légèrement lacté, chaud, se mêle à la chaleur, s'immisce dans mon être tout en-tier, me rappelant la douceur de la vanille, un arôme qui reste ancré dans mes souvenirs d'enfance. Cette vanille, odeur tantôt suave, tantôt sexy ou même légèrement animale, m'obsède, me renvoyant notamment à celle de ma chienne Rolls et de ses chiots.\n\nPuis, il y a l'eau salée. Quand je m'y plonge, je sens le sel s'imprégner dans ma peau, cette fraîcheur qui contraste avec la chaleur du soleil. Le sel me pique doucement, me nettoie, me réveille, mais il laisse toujours ce parfum unique, salin, iodé, comme une empreinte de la mer. Je me laisse bercer par l'eau, envahir par ce parfum unique qui se mélange à celui du soleil. La peau, à la fois douce et légèrement rugueuse sous l'effet du sel, devient un terrain parfait pour recevoir encore plus de lumière et de chaleur.\nEnsuite, il y a l'odeur du sable, mélange de douceur et de poussière. Elle me rappelle celle du santal, ce bois aux nuances lactées, légèrement cèdre et très suave.\nTout à coup le vent apporte un parfum d'immortelle, cette fleur que l'on trouve autour de la côte landaise.\nElle a une odeur de céleri, de fenugrec, très envoû-tante, puissante, difficile à doser dans un parfum. Le coucher de soleil est le moment où tout prend sa forme la plus parfaite. Le ciel se teinte de nuances dorées et orangées, voire même d'un rayon vert illuminant tout autour de moi. Je me laisse baigner dans cette lumière, mon corps se réchauffant encore sous l'éclat du soleil qui disparaît lentement. La brise du soir me frôle et j'aime l'idée de ce parfum solaire persistant même à l'heure où tout s'adoucit. Ce parfum est unique à chaque être. Ma peau garde encore la trace de la journée passée, une sensation douce, chaude et familière. C'est un parfum de liberté, de moments légers et simples. Il y a quelque chose de gourmand, de réconfortant dans cette chaleur qui semble s'épanouir sur ma peau. Je me tourne vers l'horizon, les vagues s'écrasant sur la plage, et tout semble s'apaiser. Le sel, la chaleur, le parfum musqué de ma peau, tout se mêle et devient un parfum que je veux conserver encore un peu, comme un souvenir précieux. Le ciel, la mer, le sable, la peau, tout est lié dans un parfum solaire unique, un parfum que je porte en moi chaque fois que je ferme les yeux et que je me souviens de ces moments suspendus.\n\nUn parfum que je cherche à capturer pour l'offrir en retour."
   },
   {
-    "video": "video/video3.mp4",
+    "video": "video/06-fumee.mp4",
     "title": "MA PLUIE ET MON BEAU TEMPS, PARFUMS DE COMPAGNONS",
     "author": "SÉBASTIEN GAUDARD",
     "summary": "Les pelages mouillés de mes chiens, entre terre sèche, cuir vieilli et herbe fraîche.",
     "content": "Au saut du lit, quand le jour se lève, vos pelages exhalent un souvenir d'aventures rêvées, mélange de terre sèche et d'un doux cuir vieilli. L'odeur de petits êtres qui ont couru et vivent l'instant présent, libres, sous un ciel toujours en fête.\n\nQuand la pluie vient caresser vos pelages soyeux, l'odeur se fait plus intense, plus vraie. Elle raconte les pas sur un chemin de boue, les roulades dans l'herbe fraîche mêlée à celle du goudron chaud des rues de Paris.\n\nDans l'air chaud d'un après-midi ensoleille, vos parfums se mêlent aux senteurs des prés en fleurs, de foin comme épicé, de terre qui aurait perdu sa douce humidité. Comme un écho de nos courses folles, de nos silences partagés, de nos regards complices, traces indélébiles d'un amour sans conditions, sans artifices.\n\nEt même si parfois le vent se fait un soupçon rustique, ce sont là vos odeurs, signature d'un lien inaltérable, partum de vie, d'instants présents et de fidélité.\nHier Hot-dog, aujourd'hui Vol-au-vent et Cappuccino, votre douce odeur est réconfortante comme un compagnon de l'âme et du cœur : ma pluie et mon beau temps."
   },
   {
-    "video": "video/video4.mp4",
+    "video": "video/05-fleur.mp4",
     "title": "DITES-LE AVEC DES FLEURE",
     "author": "SOPHIE LAVOINE-HANNEGUELLE",
     "summary": "Tubéreuse, lotus, iris, mimosa : ce que les fleurs racontent quand on ferme les yeux.",
@@ -30,7 +30,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video5.mp4",
+    "video": "video/03-cafe.mp4",
     "title": "L'ESSENCE PRÉCEDE L'EXISTENCE (OLFACTIVE)",
     "author": "EMMANUELLE DECHELETTE",
     "summary": "L'odeur d'essence de mon enfance, et ce qu'elle m'a appris sur l'huile d'olive.",
@@ -38,7 +38,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video6.mp4",
+    "video": "video/07-lumiere.mp4",
     "title": "Ô SOLEIL",
     "author": "ALIÉNOR MASSENET",
     "summary": "Soleil, sel, sable et immortelle : le parfum d'une peau qui garde la journée.",
@@ -46,7 +46,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video7.mp4",
+    "video": "video/09-ventilateur.mp4",
     "title": "MA PLUIE ET MON BEAU TEMPS, PARFUMS DE COMPAGNONS",
     "author": "SÉBASTIEN GAUDARD",
     "summary": "Les pelages mouillés de mes chiens, entre terre sèche, cuir vieilli et herbe fraîche.",
@@ -54,7 +54,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video8.mp4",
+    "video": "video/02-bulle.mp4",
     "title": "DITES-LE AVEC DES FLEURE",
     "author": "SOPHIE LAVOINE-HANNEGUELLE",
     "summary": "Tubéreuse, lotus, iris, mimosa : ce que les fleurs racontent quand on ferme les yeux.",
@@ -62,7 +62,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video9.mp4",
+    "video": "video/08-poubelle.mp4",
     "title": "L'ESSENCE PRÉCEDE L'EXISTENCE (OLFACTIVE)",
     "author": "EMMANUELLE DECHELETTE",
     "summary": "L'odeur d'essence de mon enfance, et ce qu'elle m'a appris sur l'huile d'olive.",
@@ -70,7 +70,7 @@ const TEXTS = [
   },
   // PLACEHOLDER — remplacer le clip et le texte
   {
-    "video": "video/video10.mp4",
+    "video": "video/10-ordinateur.mp4",
     "title": "Ô SOLEIL",
     "author": "ALIÉNOR MASSENET",
     "summary": "Soleil, sel, sable et immortelle : le parfum d'une peau qui garde la journée.",
