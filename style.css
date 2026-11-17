@@ -200,8 +200,16 @@ body.mode-carousel #wall .tile-caption { display: none; }
   background: linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0));
 }
 
+/* The description is the whole text of the piece now: opened, it is shown
+   entire, across the width of the band. */
 .tile.is-open .tile-title { min-height: 0; font-size: clamp(12px, 1.1vw, 14px); }
-.tile.is-open .tile-summary { min-height: 0; max-width: 62ch; font-size: clamp(13px, 1.1vw, 15px); }
+.tile.is-open .tile-summary {
+  display: block;
+  -webkit-line-clamp: none;
+  min-height: 0;
+  max-width: 66ch;
+  font-size: clamp(13px, 1.1vw, 15px);
+}
 
 /* The back control takes the toggle's corner. */
 .mode-mosaic:has(.tile.is-open) #mode-toggle { display: none; }

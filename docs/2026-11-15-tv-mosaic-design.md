@@ -189,4 +189,12 @@ the gradient recipe behind the zoomed caption. None of these change what gets bu
 - **2026-11-17** — the wall fills the viewport edge to edge (no `--pad`, no `--gap`, no `--tile-w`
   or `--caption-h` any more); tiles carry no caption; the text panel and the *Lire le texte*
   button are removed. Note the mobile trade-off: 4 columns × 3 rows at 390 px wide means clips
-  98 px wide and 281 px tall, so the crop is severe on a phone (non-goal, desktop first).
+  98 px wide and 281 px tall, so the crop is severe on a phone (non-goal, desktop first, and no
+  mobile variant is planned).
+- **2026-11-17 (2)** — the content model changed: `data.js` holds one entry per clip with
+  `video`, `title` and `summary` only (`author` and `content` are gone). The ten entries now
+  describe the smell each clip shows (machine à café, savon, flaque d'essence, ventilateur,
+  ordinateur, pause cigarettes, pot de fleurs, puits de lumière, poubelles, baie vitrée), in the
+  tile order that the wall already used. The four long articles of the first version are archived
+  in `docs/2026-11-15-textes-longs.md`. Since the description is the text of the piece, the
+  zoom band no longer clamps it to three lines.
