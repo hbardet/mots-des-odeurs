@@ -1,7 +1,8 @@
 /* Video wall — vanilla, no dependencies.
    TEXTS (see data.js) drives everything: tile i shows TEXTS[i].video and is
    labelled with TEXTS[i].title. Three views of the same ten pieces, swapped
-   through location.hash so the toggle is a real link and the back button works:
+   through location.hash so the three links at the top are real links and the
+   back button works:
    the mosaic wall (default), the full-bleed carousel, and the plan — the flat's
    floor plan, whose ten pink dots open a card over it (plan.svg carries the
    mapping: data-index on each dot is a TEXTS index). */
@@ -10,7 +11,8 @@
   'use strict';
 
   var wall = document.getElementById('wall');
-  var toggle = document.getElementById('mode-toggle');
+  var modesNav = document.getElementById('modes');
+  var modeLinks = modesNav ? modesNav.querySelectorAll('a[data-view]') : [];
   var prevBtn = document.getElementById('prev');
   var nextBtn = document.getElementById('next');
   var zoomUi = document.getElementById('zoom-ui');
@@ -33,11 +35,6 @@
   var cardOpen = -1;   // plan dot whose clip is in the card, -1 when none
   var cardOrigin = null; // the dot to hand the focus back to
   var planWired = false;
-
-  // The toggle is a single link that walks the three views in a ring.
-  var NEXT_MODE = { mosaic: 'carousel', carousel: 'plan', plan: 'mosaic' };
-  var MODE_LABEL = { mosaic: 'Mosaïque', carousel: 'Carrousel', plan: 'Plan' };
-  var MODE_HASH = { mosaic: '#mosaique', carousel: '#carrousel', plan: '#plan' };
   var SVG_NS = 'http://www.w3.org/2000/svg';
 
   /* ---------- helpers ---------- */
@@ -160,19 +157,20 @@
     }
 
     mode = next;
-    // The class lives on <body> so the scrim, the arrows, the plan and the
-    // toggle — all siblings of the wall — can be told about the view too.
+    // The class lives on <body> so the scrim, the arrows, the views and the
+    // plan — all siblings of the wall — can be told about the view too.
     document.body.classList.toggle('mode-mosaic', next === 'mosaic');
     document.body.classList.toggle('mode-carousel', next === 'carousel');
     document.body.classList.toggle('mode-plan', next === 'plan');
 
-    var after = NEXT_MODE[next];
-    toggle.setAttribute('href', MODE_HASH[after]);
-    toggle.textContent = MODE_LABEL[after];
-    toggle.setAttribute(
-      'aria-label',
-      'Passer en mode ' + MODE_LABEL[after].toLowerCase()
-    );
+    // Three links, one per view: the one on screen is filled in and marked as
+    // the current page, so the bar reads as a position rather than a switch.
+    Array.prototype.forEach.call(modeLinks, function (link) {
+      var current = link.getAttribute('data-view') === next;
+      link.classList.toggle('is-current', current);
+      if (current) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
 
     // What a tile does depends on the view: on the wall it enlarges the clip,
     // in the carousel it does nothing at all, so it is neither announced nor

@@ -167,10 +167,11 @@ Each entry gains two fields; nothing is renamed:
 
 ### Swapping presentations
 
-- Toggle is `<a id="mode-toggle">`, top-left, its `href` and label flipped by mode: `#carrousel`
-  in mosaic, `#mosaique` in carousel.
+- Three links in one capsule, top-left: `Plan` (`#plan`), `Mosaïque` (`#mosaique`), `Carrousel`
+  (`#carrousel`). The one on screen is filled in and carries `aria-current="page"`; the other two
+  sit flat and light up on hover.
 - Mode is read from `location.hash` on load (empty or unknown → mosaic) and on `hashchange`.
-- Switching closes any open zoom and shows/hides the mode toggle against the zoom UI.
+- Switching closes any open zoom, and the capsule steps aside for the zoom's back control.
 - The carousel keeps its own current index in memory across swaps (no reload, so it just stays).
 
 ### Keyboard
@@ -218,10 +219,11 @@ on `file://` the fetch fails and the drawing is shown flat, without its dots.
 
 ### Kinds of view now
 
-One link walks the three views in a ring: mosaic → carousel → plan → mosaic. It always names the
-next view (`#mosaique`, `#carrousel`, `#plan`), so `location.hash` stays the single source of truth
-and the back button keeps working. A view change closes whatever was layered above the view it
-leaves (the zoom belongs to the wall, the card to the plan).
+Three links, one per view, in a single capsule at the top left — `Plan`, `Mosaïque`, `Carrousel`.
+The one on screen is filled in (`aria-current="page"`), so the capsule reads as a position rather
+than as a switch. `location.hash` stays the single source of truth and the back button keeps
+working. A view change closes whatever was layered above the view it leaves (the zoom belongs to
+the wall, the card to the plan).
 
 > The labels in `plan.svg` ask for **Feroniapi** (objects) and **Futura** (room names), neither of
 > which ships with the site: they fall back to a system serif and grotesque. Same in any SVG
@@ -248,5 +250,11 @@ the gradient recipe behind the zoomed caption. None of these change what gets bu
   in `docs/2026-11-15-textes-longs.md`. Since the description is the text of the piece, the
   zoom band no longer clamps it to three lines.
 - **2026-11-17 (3)** — third view: the floor plan (`plan.svg`), faded in where the wall was, its
-  ten pink marks opening a card with the clip. The mode toggle became a three-view ring. See
-  *Plan (third view)* above for the dot table and the interaction.
+  ten pink marks opening a card with the clip. See *Plan (third view)* above for the dot table and
+  the interaction.
+- **2026-11-17 (4)** — the single cycling link became three links in one capsule (`Plan`,
+  `Mosaïque`, `Carrousel`), the current view filled in. `10-ordinateur` was re-cut from a new
+  1960 × 1080 capture of the ARCHISTORM screen (`scripts/encode-videos.sh` now reads
+  `ordinateur.mp4`; the old `ordianteur.GIF` master is no longer used). Note the wall crops it:
+  a cell is ~4:3 on a 16:9 screen, so the logo is cut at both ends in the mosaic and reads whole
+  only once enlarged or in the plan's card.

@@ -38,7 +38,7 @@ CLIPS=(
   "07-lumiere|lumière.mp4||"
   "08-poubelle|Poubelle.mp4||"
   "09-ventilateur|ventilateur.mov|full|"
-  "10-ordinateur|ordianteur.GIF||"
+  "10-ordinateur|ordinateur.mp4||"
 )
 
 encode() { # $1 master, $2 filtre 3:2, $3 débit cible ("" = CRF), $4 sortie
