@@ -6,6 +6,21 @@
   --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+/* ---------- fonts ---------- */
+
+/* Feroniapi (Julienne Richard / Velvetyne, SIL Open Font License) — the Art
+   Nouveau italic the plan is lettered in, named by .cls-13 in plan.svg. It
+   ships as a single Medium Italic whose glyphs are already slanted, so it is
+   declared normal/normal: a plain `font-family: Feroniapi` picks it up without
+   the browser slanting it a second time. Licence: fonts/LICENSE-Feroniapi.txt */
+@font-face {
+  font-family: "Feroniapi";
+  src: url("fonts/Feroniapi-MediumItalic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 * { box-sizing: border-box; }
 
 html, body {

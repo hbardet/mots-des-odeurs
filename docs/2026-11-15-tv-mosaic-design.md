@@ -225,10 +225,29 @@ than as a switch. `location.hash` stays the single source of truth and the back 
 working. A view change closes whatever was layered above the view it leaves (the zoom belongs to
 the wall, the card to the plan).
 
-> The labels in `plan.svg` ask for **Feroniapi** (objects) and **Futura** (room names), neither of
-> which ships with the site: they fall back to a system serif and grotesque. Same in any SVG
-> viewer, so nothing is broken — but the drawing will only look like the designer's once the two
-> fonts are added.
+### Fonts
+
+The drawing uses two families. **Feroniapi** (Julienne Richard / Velvetyne, SIL Open Font
+License) letters the nine object labels; it ships with the site as
+`fonts/Feroniapi-MediumItalic.woff2` (185 Ko) and is declared in `style.css` with an `@font-face`
+named `Feroniapi`, which is what `.cls-13` asks for. The face is a single Medium Italic drawn
+slanted, so the rule declares it `font-weight: normal; font-style: normal` — a plain
+`font-family: Feroniapi` then picks it up without the browser slanting it twice.
+
+**Futura** letters the room names (COULOIR, TERRASSE, BUREAU, TOILETTES, TROTTOIRE) and is *not*
+shipped: it is installed on macOS, so the names look right there and fall back to the system
+grotesque elsewhere. Left as is on purpose — the room names are not part of the ten pieces.
+
+`fonts/LICENSE-Feroniapi.txt` travels with the font, as the licence asks. A re-export of
+`plan.svg` from Illustrator keeps working as long as `.cls-13` still says `font-family:
+Feroniapi`; the font itself lives outside the drawing, so an export cannot lose it.
+
+> What "Pot de fleurs" is: not a `<text>`, but ten `<path class="cls-14">` — the lettering was
+> converted to outlines by the designer, so it carries its own shapes and depends on no font at
+> all. That is why it looked right while its nine neighbours fell back to Times: the labels are
+> live text positioned letter by letter (`<tspan x="…">`), and those offsets, computed for
+> Feroniapi, open holes in any substitute face ("Pause cig a rette"). With the font in place the
+> offsets land where they were drawn to.
 
 ## Left to the builder
 
@@ -258,3 +277,6 @@ the gradient recipe behind the zoomed caption. None of these change what gets bu
   `ordinateur.mp4`; the old `ordianteur.GIF` master is no longer used). Note the wall crops it:
   a cell is ~4:3 on a 16:9 screen, so the logo is cut at both ends in the mosaic and reads whole
   only once enlarged or in the plan's card.
+- **2026-11-17 (5)** — Feroniapi embedded (`fonts/Feroniapi-MediumItalic.woff2`, SIL OFL, declared
+  in `style.css`), so the nine object labels letter like the outlined "Pot de fleurs" and their
+  per-letter offsets stop opening holes. The room names stay in Futura, as asked.
