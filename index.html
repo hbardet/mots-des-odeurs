@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ô — Récits olfactifs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="mode-mosaic">
+
+<div id="wall" role="group" aria-label="Mosaïque des récits">
+  <div id="scrim" aria-hidden="true"></div>
+</div>
+
+<a id="mode-toggle" href="#carrousel">Carrousel</a>
+
+<button id="prev" type="button" aria-label="Séquence précédente">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 4 7 12l8 8"/></svg>
+</button>
+<button id="next" type="button" aria-label="Séquence suivante">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 4l8 8-8 8"/></svg>
+</button>
+
+<div id="zoom-ui" hidden>
+  <button id="zoom-back" type="button" aria-label="Revenir à la mosaïque">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 4 7 12l8 8"/></svg>
+  </button>
+  <button id="zoom-text" type="button">Lire le texte</button>
+</div>
+
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+  <div id="modal-panel">
+    <button id="modal-close" type="button" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2 id="modal-title"></h2>
+    <p id="modal-author"></p>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
