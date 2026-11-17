@@ -1,6 +1,6 @@
 /* Video wall — vanilla, no dependencies.
-   TEXTS (see data.js) drives everything: tile i shows TEXTS[i].video, captions
-   TEXTS[i].title / .summary. Two presentations of the same ten tiles: the mosaic
+   TEXTS (see data.js) drives everything: tile i shows TEXTS[i].video and is
+   labelled with TEXTS[i].title. Two presentations of the same ten tiles: the mosaic
    wall (default) and the full-bleed carousel, swapped through location.hash so
    the toggle is a real link and the back button works. */
 
@@ -13,13 +13,6 @@
   var nextBtn = document.getElementById('next');
   var zoomUi = document.getElementById('zoom-ui');
   var zoomBack = document.getElementById('zoom-back');
-  var zoomText = document.getElementById('zoom-text');
-  var modal = document.getElementById('modal');
-  var panel = document.getElementById('modal-panel');
-  var modalClose = document.getElementById('modal-close');
-  var modalTitle = document.getElementById('modal-title');
-  var modalAuthor = document.getElementById('modal-author');
-  var modalBody = document.getElementById('modal-body');
 
   var ITEM_COUNT = Math.min(TEXTS.length, 10);
   var tiles = [];
@@ -138,13 +131,10 @@
   }
 
   function setMode(next) {
-    // A change of presentation closes whatever was layered above the wall: a
-    // zoom or a text panel belongs to the presentation it was opened from, and
-    // the back button can change the hash under it.
-    if (next !== mode) {
-      closeText();
-      closeZoom();
-    }
+    // A change of presentation closes whatever was layered above the wall: the
+    // zoom belongs to the presentation it was opened from, and the back button
+    // can change the hash under it.
+    if (next !== mode) closeZoom();
 
     mode = next;
     // The class lives on <body> so the scrim, the arrows and the toggle — all
@@ -265,77 +255,6 @@
     tile.focus();
   }
 
-  /* ---------- text rendering ---------- */
-
-  function renderBody(content) {
-    modalBody.textContent = '';
-
-    String(content || '')
-      .split(/\n\s*\n/)
-      .forEach(function (block) {
-        var lines = block.split('\n').filter(function (line) {
-          return line.trim() !== '';
-        });
-        if (!lines.length) return;
-
-        var prose = [];
-        var bullets = [];
-
-        lines.forEach(function (line) {
-          if (/^\s*[-–—•]\s+/.test(line)) {
-            bullets.push(line.replace(/^\s*[-–—•]\s+/, '').trim());
-          } else {
-            prose.push(line.trim());
-          }
-        });
-
-        if (prose.length) {
-          var p = document.createElement('p');
-          p.textContent = prose.join('\n');
-          modalBody.appendChild(p);
-        }
-
-        if (bullets.length) {
-          var ul = document.createElement('ul');
-          bullets.forEach(function (text) {
-            var li = document.createElement('li');
-            li.textContent = text;
-            ul.appendChild(li);
-          });
-          modalBody.appendChild(ul);
-        }
-      });
-  }
-
-  /* ---------- modal ---------- */
-
-  function openText(i) {
-    var item = TEXTS[i];
-    if (!item) return;
-
-    modalTitle.textContent = item.title || '';
-    modalAuthor.textContent = item.author || '';
-    renderBody(item.content);
-
-    // The clip keeps running behind the glass on purpose — the motion is
-    // what makes the panel read as glass rather than as a flat sheet.
-
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    panel.scrollTop = 0;
-    modalClose.focus();
-  }
-
-  function closeText() {
-    if (!modal.classList.contains('is-open')) return;
-
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-
-    if (mode === 'mosaic' && zoomed >= 0) zoomText.focus();
-    else if (tiles[index]) tiles[index].focus();
-  }
-
   /* ---------- wiring ---------- */
 
   wall.addEventListener('click', function (e) {
@@ -368,26 +287,9 @@
     closeZoom();
   });
 
-  zoomText.addEventListener('click', function (e) {
-    e.stopPropagation();
-    if (zoomed >= 0) openText(zoomed);
-  });
-
-  modalClose.addEventListener('click', function (e) {
-    e.stopPropagation();
-    closeText();
-  });
-
-  modal.addEventListener('click', function (e) {
-    if (e.target === modal) closeText();
-  });
-
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      if (modal.classList.contains('is-open')) {
-        e.preventDefault();
-        closeText();
-      } else if (zoomed >= 0) {
+      if (zoomed >= 0) {
         e.preventDefault();
         closeZoom();
       }
@@ -395,7 +297,6 @@
     }
 
     if (mode !== 'carousel') return;
-    if (modal.classList.contains('is-open')) return;
 
     if (e.key === 'ArrowLeft') {
       e.preventDefault();

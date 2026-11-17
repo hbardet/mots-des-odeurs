@@ -5,21 +5,20 @@
 The site currently has one presentation: a fullscreen looping clip, two arrows, and a click
 that opens the piece's text in a frosted-glass panel. The owner wants a second presentation —
 a **video wall**, the way a bank of TV screens looks in an installation: ten tiles, all looping
-at once, each with its caption underneath, and a click that promotes one tile to full screen.
+at once, edge to edge, and a click that promotes one tile to full screen.
 
 The mosaic is now what a visitor lands on. The carousel stays reachable, because it is the
 strongest presentation of a single piece and it is already built and tuned.
 
-Why a wall: a wall shows the *body of work* at a glance — all ten pieces, titles and one-line
-hooks included — where the carousel shows one mood at a time and hides the text behind a click.
+Why a wall: a wall shows the *body of work* at a glance — all ten pieces at once — where the
+carousel shows one mood at a time.
 The two answer different questions: "what is this collection?" versus "let me sit inside one".
 
 ## Goals
 
-- Mosaic is the default view: 10 tiles, all looping continuously, arranged 4 / 4 / 2 with the
-  two tiles of the last row centered, all tiles the same size.
-- Each tile: the clip, then the piece's title and a one-line summary underneath, both from
-  `data.js`.
+- Mosaic is the default view: 10 tiles, all looping continuously, filling the whole viewport,
+  arranged 4 / 4 / 2 with the two tiles of the last row centered, all tiles the same size.
+- Each tile is the clip and nothing else: no caption on the wall.
 - Clicking a tile promotes it to full screen and it keeps playing, with a back control.
 - One control, top-left, to swap between the two presentations.
 - The swap is instant: no clip reloads, the clip you are looking at never stops, playback
@@ -118,16 +117,15 @@ Each entry gains two fields; nothing is renamed:
 
 ### Wall layout
 
-- `#wall`: CSS grid, `grid-template-columns: repeat(12, 1fr)`, every tile `grid-column: span 3`.
-  Tile 9 is placed `grid-column: 4 / span 3`, tile 10 `7 / span 3` — which centers the last row.
-- Tiles are identical in size; each media box is `aspect-ratio: 3 / 2` (the clips' own ratio),
-  video `object-fit: cover`.
-- The wall is sized to fit one screen: `height: 100dvh`, small outer padding, `gap` of
-  `clamp(10px, 1.2vw, 20px)`. Three rows of 3:2 tiles at four across occupy ≈ `0.5 × vw` of
-  height, so at any 16:9-ish window the whole wall is visible without scrolling.
-  `overflow-y: auto` is the safety valve for a tall, narrow window — never a design target.
-- Caption under each media box: title in the existing uppercase / 0.14em / 600 sans treatment
-  (11–12 px), summary below it in `--ink-soft` sans (12–13 px), clamped to two lines.
+- `#wall`: CSS grid, `grid-template-columns: repeat(4, 1fr)`, `grid-template-rows: repeat(3, 1fr)`,
+  `gap: 0`, `padding: 0`, `height: 100dvh`. The wall *is* the window: the clips reach every border.
+  Tile 9 is placed `grid-column: 2`, tile 10 `grid-column: 3` — which centers the last row, and
+  leaves the two corner cells of that row empty (black), by design.
+- Tiles are identical in size; the media box has no ratio of its own in mosaic mode
+  (`height: 100%; aspect-ratio: auto`), so the cell dictates the crop, `object-fit: cover`.
+  Nothing scrolls, on any window shape.
+- No caption on the wall: `.tile-caption` is `display: none` in mosaic mode, and only comes back
+  over an *opened* tile (see Full screen). The title is still the tile's accessible name.
 - Boot order: build the tiles, set every `src`, then call `play()` on all ten. Rejections are
   caught; a single `playAll()` is retried on the first user gesture anywhere in the document,
   for browsers that refuse autoplay until then.
@@ -141,7 +139,7 @@ Each entry gains two fields; nothing is renamed:
 - `#prev` / `#next` are shown in carousel mode only; they already `stopPropagation`.
 - Crossfade now needs no `loadeddata` wait, because every clip is already decoding; the existing
   `readyState >= 2` guard is kept only for the first paint after load.
-- Clicking the background in carousel mode still opens the text panel (current behaviour).
+- A click on the full-bleed clip does nothing: paging is the arrows' job.
 - **Decode policy**: in carousel mode the nine non-active clips are paused, and all ten are
   resumed in one call when the wall comes back. Nothing visible ever stops in carousel mode (only
   one tile is on screen), it removes nine invisible decoders from the busiest moment, and it costs
@@ -158,36 +156,37 @@ Each entry gains two fields; nothing is renamed:
   `position: fixed; inset: 0; z-index: 40`, its media box fills the screen and the caption
   becomes a bottom overlay on a dark gradient. The element is the *same* `<video>` — nothing is
   reloaded, `currentTime` is preserved, so the promotion looks like the tile grew.
-- `#zoom-ui` is one global strip, hidden by default, containing a **Retour** button and a
-  **Lire le texte** button. It replaces the mode toggle in the top-left corner while zoomed,
-  and sits above the promoted tile.
-- **Stack**: promoted tile `z-index: 40`, `#zoom-ui` `50`, the text panel `60` — the panel is
-  opened *over* the zoomed clip, so it must render above it. The existing `#modal` at `z-index: 10`
-  is raised accordingly.
+- `#zoom-ui` is one global strip, hidden by default, containing a single **Retour** button. It
+  replaces the mode toggle in the top-left corner while zoomed, and sits above the promoted tile
+  (`#zoom-ui` `z-index: 50`).
 - `Retour` (or `Escape`) removes `.is-open` and the tile drops back into the grid, still playing.
-- **Lire le texte** opens the existing glass panel over the zoomed clip. Rationale: in mosaic
-  mode the click gesture is spent on "play", so without this the long-form text has no route in
-  this presentation. It reuses the current modal as-is.
+- **The long-form text panel is gone** (2026-11-17): no `#modal`, no *Lire le texte* button, no
+  `renderBody()`. The `content` field stays in `data.js` — it is the text of the piece, not a
+  UI concern — but nothing renders it today. The enlarged tile still shows its title and summary
+  as a bottom band.
 
 ### Swapping presentations
 
 - Toggle is `<a id="mode-toggle">`, top-left, its `href` and label flipped by mode: `#carrousel`
   in mosaic, `#mosaique` in carousel.
 - Mode is read from `location.hash` on load (empty or unknown → mosaic) and on `hashchange`.
-- Switching closes any open zoom and any open text panel, and shows/hides the mode toggle
-  against the zoom UI.
+- Switching closes any open zoom and shows/hides the mode toggle against the zoom UI.
 - The carousel keeps its own current index in memory across swaps (no reload, so it just stays).
 
 ### Keyboard
 
-- `Escape`: closes the **topmost** layer — the text panel if it is open, else the zoom. Closing
-  the panel returns focus to **Lire le texte**; closing the zoom returns focus to the tile it came
-  from. `Escape` never closes the lower layer while the upper one is showing.
+- `Escape`: closes the zoom and returns focus to the tile it came from.
 - `ArrowLeft` / `ArrowRight`: change slide, carousel mode only.
 - Tiles are real `<button>`s, so `Tab` + `Enter`/`Space` opens the zoom for free.
 
 ## Left to the builder
 
-Exact gaps and paddings, the precise type scale of the caption inside the tile, the hover
-treatment of a tile (a lift, a brightened hairline, or nothing), the easing curve, and the
-gradient recipe behind the zoomed caption. None of these change what gets built.
+The hover treatment of a tile (a lift, a brightened hairline, or nothing), the easing curve, and
+the gradient recipe behind the zoomed caption. None of these change what gets built.
+
+## Revisions
+
+- **2026-11-17** — the wall fills the viewport edge to edge (no `--pad`, no `--gap`, no `--tile-w`
+  or `--caption-h` any more); tiles carry no caption; the text panel and the *Lire le texte*
+  button are removed. Note the mobile trade-off: 4 columns × 3 rows at 390 px wide means clips
+  98 px wide and 281 px tall, so the crop is severe on a phone (non-goal, desktop first).

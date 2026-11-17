@@ -1,29 +1,8 @@
 :root {
   --ink: #f6f2ec;
   --ink-soft: rgba(246, 242, 236, 0.62);
-  --panel: #f6f2ec;
-  --glass: rgba(251, 248, 244, 0.5);
-  --glass-edge: rgba(255, 255, 255, 0.5);
-  --glass-blur: blur(44px) saturate(165%);
-  --panel-ink: #1b1917;
-  --panel-ink-soft: #5d564e;
   --fade: 600ms;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --gap: clamp(10px, 1.2vw, 20px);
-  --pad: clamp(16px, 2vw, 34px);
-  /* What a caption can occupy at its largest: 10px of air, a title clamped to
-     two lines, 4px, a summary clamped to three lines. This is a ceiling — the
-     captions are set in a size that follows the tile, so they never outgrow it.
-     A caption that did would push the wall below the fold. */
-  --caption-h: 100px;
-  /* A tile is as wide as the tighter of two constraints: four of them across
-     the window, or three rows of 3:2 media plus their captions inside the
-     window. Sizing from the height is what keeps the wall on one screen. */
-  --tile-w: max(120px, min(
-    calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4),
-    calc((100dvh - 2 * var(--pad) - 2 * var(--gap) - 3 * var(--caption-h)) / 3 * 1.5)
-  ));
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", Georgia, serif;
   --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -66,20 +45,30 @@ html, body {
 
 #wall { position: relative; }
 
+/* Four by four by two, edge to edge: the wall is the window. Three rows of a
+   third of the viewport each, four equal columns, no gap and no margin, so the
+   clips reach every border. The last two tiles sit centered on the third row. */
 body.mode-mosaic #wall {
   display: grid;
-  grid-template-columns: repeat(4, var(--tile-w));
-  justify-content: center;
-  align-content: center;
-  gap: var(--gap);
-  padding: var(--pad);
-  min-height: 100dvh;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0;
+  padding: 0;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-/* Four by four by two: the last two tiles sit centered on the third row,
-   in the middle two of the four columns. */
+/* The cell dictates the size: the media stops following its 3:2 ratio and
+   covers whatever the cell is. */
+body.mode-mosaic #wall .tile { min-width: 0; min-height: 0; }
+body.mode-mosaic #wall .tile-media { height: 100%; aspect-ratio: auto; }
+
 body.mode-mosaic #wall .tile:nth-of-type(9) { grid-column: 2; }
 body.mode-mosaic #wall .tile:nth-of-type(10) { grid-column: 3; }
+
+/* The wall carries no words: title and description only appear once a clip is
+   opened, over the enlarged picture. */
+body.mode-mosaic #wall .tile:not(.is-open) .tile-caption { display: none; }
 
 .tile {
   appearance: none;
@@ -125,9 +114,7 @@ body.mode-mosaic:has(.tile.is-open) #wall .tile:not(.is-open) {
   -webkit-line-clamp: 2;
   overflow: hidden;
   min-height: 2.7em;
-  /* Type follows the tile: a narrow tile would otherwise need a third line,
-     and a third line would push the wall below the fold. */
-  font-size: clamp(8.5px, calc(var(--tile-w) * 0.041), 11.5px);
+  font-size: clamp(12px, 1.1vw, 14px);
   font-weight: 600;
   line-height: 1.35;
   /* 0.14em asked the longest title for a third line at 1280 wide, and a third
@@ -143,7 +130,7 @@ body.mode-mosaic:has(.tile.is-open) #wall .tile:not(.is-open) {
   overflow: hidden;
   min-height: 4.35em;
   margin-top: 4px;
-  font-size: clamp(10px, calc(var(--tile-w) * 0.045), 12.5px);
+  font-size: clamp(13px, 1.1vw, 15px);
   line-height: 1.45;
   color: var(--ink-soft);
 }
@@ -238,7 +225,7 @@ body.mode-carousel #wall .tile-caption { display: none; }
   to   { opacity: 1; transform: none; }
 }
 
-#zoom-back, #zoom-text {
+#zoom-back {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -259,17 +246,16 @@ body.mode-carousel #wall .tile-caption { display: none; }
 }
 
 #zoom-back { width: 44px; border-radius: 50%; }
-#zoom-text { padding: 0 20px; border-radius: 999px; }
 
-#zoom-back:hover, #zoom-text:hover {
+#zoom-back:hover {
   background: var(--ink);
   border-color: var(--ink);
   color: #14110f;
 }
 
-#zoom-back:active, #zoom-text:active { transform: scale(0.96); }
+#zoom-back:active { transform: scale(0.96); }
 
-#zoom-back:focus-visible, #zoom-text:focus-visible {
+#zoom-back:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
@@ -355,7 +341,7 @@ body.mode-carousel #wall .tile-caption { display: none; }
 
 #prev:active, #next:active { transform: scale(0.94); }
 
-#prev:focus-visible, #next:focus-visible, #modal-close:focus-visible {
+#prev:focus-visible, #next:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
@@ -370,147 +356,14 @@ body.mode-carousel #wall .tile-caption { display: none; }
   stroke-linejoin: round;
 }
 
-/* ---------- modal ---------- */
-
-#modal {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: none;
-  padding: clamp(16px, 4vw, 48px);
-  background: rgba(8, 7, 6, 0.3);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  overflow-y: auto;
-}
-
-#modal.is-open { display: flex; align-items: center; justify-content: center; }
-
-#modal-panel {
-  position: relative;
-  width: 100%;
-  max-width: 720px;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: clamp(28px, 5vw, 64px) clamp(22px, 5vw, 60px);
-  background: var(--glass);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-edge);
-  color: var(--panel-ink);
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  animation: rise 420ms var(--ease) both;
-}
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: none; }
-}
-
-#modal-close {
-  position: absolute;
-  top: clamp(10px, 2vw, 18px);
-  right: clamp(10px, 2vw, 18px);
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--panel-ink-soft);
-  cursor: pointer;
-  transition: background 200ms var(--ease), color 200ms var(--ease);
-}
-
-#modal-close:hover { background: rgba(27, 25, 23, 0.09); color: var(--panel-ink); }
-
-#modal-close svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-
-#modal-title {
-  margin: 0 0 10px;
-  font-family: var(--sans);
-  font-size: clamp(15px, 2.1vw, 19px);
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  max-width: 88%;
-}
-
-#modal-author {
-  margin: 0 0 clamp(22px, 4vw, 36px);
-  font-family: var(--sans);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--panel-ink-soft);
-}
-
-#modal-body {
-  font-family: var(--serif);
-  font-size: clamp(15px, 1.9vw, 17.5px);
-  line-height: 1.72;
-  color: #26221e;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-}
-
-#modal-body p {
-  margin: 0 0 1.15em;
-  white-space: pre-line;
-}
-
-#modal-body p:last-child { margin-bottom: 0; }
-
-#modal-body ul {
-  margin: 0 0 1.15em;
-  padding-left: 1.2em;
-}
-
-#modal-body li { margin-bottom: 0.4em; }
-
 /* ---------- small screens ---------- */
 
 @media (max-width: 640px) {
   #prev, #next { width: 46px; height: 46px; margin-top: -23px; }
   #prev svg, #next svg { width: 18px; height: 18px; }
-  /* Inset the sheet so the clip stays visible around the glass. */
-  #modal { padding: 14px; }
-  #modal-panel {
-    max-height: calc(100dvh - 28px);
-    max-width: none;
-    border-radius: 3px;
-    padding-top: clamp(56px, 12vw, 72px);
-    padding-bottom: calc(clamp(32px, 8vw, 44px) + env(safe-area-inset-bottom));
-  }
-  /* Sticky so it stays reachable while a long text scrolls under it. */
-  #modal-close {
-    position: sticky;
-    top: 10px;
-    margin-left: auto;
-    margin-bottom: -44px;
-    z-index: 3;
-    background: rgba(250, 247, 242, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-edge);
-  }
-  #modal-close:hover { background: rgba(250, 247, 242, 0.95); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .tile { transition-duration: 1ms; }
-  #modal-panel { animation: none; }
   #zoom-ui:not([hidden]) { animation: none; }
 }
