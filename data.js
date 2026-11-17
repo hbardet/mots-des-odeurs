@@ -15,7 +15,7 @@ const TEXTS = [
   },
   {
     "video": "video/06-fumee.mp4",
-    "title": "PAUSE CIGARETTES",
+    "title": "PAUSE CIGARETTE",
     "summary": "L'odeur de cigarette flotte dans l'air, un parfum tenace qui s'incruste partout… même quand le fumeur a disparu depuis trois heures !"
   },
   {
@@ -45,7 +45,7 @@ const TEXTS = [
   },
   {
     "video": "video/08-poubelle.mp4",
-    "title": "POUBELLES",
+    "title": "POUBELLE",
     "summary": "Les poubelles dégagent une odeur putride, tandis que des mouches grouillent autour des déchets dans un bourdonnement incessant, créant une atmosphère lourde, malsaine et profondément dérangeante."
   },
   {
